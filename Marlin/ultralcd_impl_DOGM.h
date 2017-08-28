@@ -267,8 +267,8 @@ void lcd_printPGM_utf(const char *str, uint8_t n=LCD_WIDTH) {
       u8g.firstPage();
       do {
         u8g.drawBitmapP(
-          (128 - (CUSTOM_BOOTSCREEN_BMPWIDTH))  /2,
-          ( 64 - (CUSTOM_BOOTSCREEN_BMPHEIGHT)) /2,
+          (100 - (CUSTOM_BOOTSCREEN_BMPWIDTH))  /2,
+          ( 28 - (CUSTOM_BOOTSCREEN_BMPHEIGHT)) /2,
           CEILING(CUSTOM_BOOTSCREEN_BMPWIDTH, 8), CUSTOM_BOOTSCREEN_BMPHEIGHT, custom_start_bmp);
       } while (u8g.nextPage());
     }
