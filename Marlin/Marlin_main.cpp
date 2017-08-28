@@ -605,7 +605,7 @@ static uint8_t target_extruder;
         delta_calibration_radius,
         delta_diagonal_rod_2_tower[ABC],
         delta_segments_per_second,
-        delta_clip_start_height = Z_MAX_POS;
+        delta_clip_start_height = Z_MAX_POS-10;
 
   float delta_safe_distance_from_top();
 

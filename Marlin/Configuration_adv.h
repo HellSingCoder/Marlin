@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -183,7 +183,7 @@
  */
 //#define USE_CONTROLLER_FAN
 #if ENABLED(USE_CONTROLLER_FAN)
-  //#define CONTROLLER_FAN_PIN FAN1_PIN  // Set a custom pin for the controller fan
+  #define CONTROLLER_FAN_PIN -1  // Set a custom pin for the controller fan
   #define CONTROLLERFAN_SECS 60          // Duration in seconds for the fan to run after all motors are disabled
   #define CONTROLLERFAN_SPEED 255        // 255 == full speed
 #endif
@@ -212,13 +212,13 @@
  * Multiple extruders can be assigned to the same pin in which case
  * the fan will turn on when any selected extruder is above the threshold.
  */
-#define E0_AUTO_FAN_PIN -1
+#define E0_AUTO_FAN_PIN 9
 #define E1_AUTO_FAN_PIN -1
 #define E2_AUTO_FAN_PIN -1
 #define E3_AUTO_FAN_PIN -1
 #define E4_AUTO_FAN_PIN -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
-#define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
+#define EXTRUDER_AUTO_FAN_SPEED   240  // 255 == full speed
 
 /**
  * M355 Case Light on-off / brightness
@@ -227,8 +227,8 @@
 #if ENABLED(CASE_LIGHT_ENABLE)
   //#define CASE_LIGHT_PIN 4                  // Override the default pin if needed
   #define INVERT_CASE_LIGHT false             // Set true if Case Light is ON when pin is LOW
-  #define CASE_LIGHT_DEFAULT_ON true          // Set default power-up state on
-  #define CASE_LIGHT_DEFAULT_BRIGHTNESS 105   // Set default power-up brightness (0-255, requires PWM pin)
+  //#define CASE_LIGHT_DEFAULT_ON true          // Set default power-up state on
+  //#define CASE_LIGHT_DEFAULT_BRIGHTNESS 105   // Set default power-up brightness (0-255, requires PWM pin)
   //#define MENU_ITEM_CASE_LIGHT              // Add a Case Light option to the LCD main menu
 #endif
 
@@ -284,7 +284,7 @@
 
   #if ENABLED(Z_DUAL_ENDSTOPS)
     #define Z2_USE_ENDSTOP _XMAX_
-    #define Z_DUAL_ENDSTOPS_ADJUSTMENT  0  // use M666 command to determine/test this value
+    #define Z_DUAL_ENDSTOPS_ADJUSTMENT  0  // use M666 command to determine this value
   #endif
 
 #endif // Z_DUAL_STEPPER_DRIVERS
@@ -337,8 +337,8 @@
 //homing hits the endstop, then retracts by this distance, before it tries to slowly bump again:
 #define X_HOME_BUMP_MM 5
 #define Y_HOME_BUMP_MM 5
-#define Z_HOME_BUMP_MM 2
-#define HOMING_BUMP_DIVISOR {2, 2, 4}  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#define Z_HOME_BUMP_MM 5 // deltas need the same for all three axis
+#define HOMING_BUMP_DIVISOR {10, 10, 10}  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 //#define QUICK_HOME  //if this is defined, if both x and y are to be homed, a diagonal move will be performed initially.
 
 // When G28 is called, this option will make Y home before X
@@ -360,7 +360,7 @@
 // Default stepper release if idle. Set to 0 to deactivate.
 // Steppers will shut down DEFAULT_STEPPER_DEACTIVE_TIME seconds after the last move when DISABLE_INACTIVE_? is true.
 // Time can be set by M18 and M84.
-#define DEFAULT_STEPPER_DEACTIVE_TIME 120
+#define DEFAULT_STEPPER_DEACTIVE_TIME 60
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // set to false if the nozzle will fall down on your printed part when print has finished.
@@ -374,7 +374,8 @@
 // @section lcd
 
 #if ENABLED(ULTIPANEL)
-  #define MANUAL_FEEDRATE {50*60, 50*60, 4*60, 60} // Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE_XYZ 50*60
+  #define MANUAL_FEEDRATE { MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
   #define ULTIPANEL_FEEDMULTIPLY  // Comment to disable setting feedrate multiplier via encoder
 #endif
 
@@ -384,7 +385,8 @@
 #define DEFAULT_MINSEGMENTTIME        20000
 
 // If defined the movements slow down when the look ahead buffer is only half full
-#define SLOWDOWN
+// (don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
+//#define SLOWDOWN
 
 // Frequency limit
 // See nophead's blog for more info
@@ -420,7 +422,7 @@
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
 //#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
-//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
 // Uncomment to enable an I2C based DIGIPOT like on the Azteeg X3 Pro
@@ -435,7 +437,7 @@
 //===========================================================================
 
 #define ENCODER_RATE_MULTIPLIER         // If defined, certain menu edit operations automatically multiply the steps when the encoder is moved quickly
-#define ENCODER_10X_STEPS_PER_SEC 75    // If the encoder steps per sec exceeds this value, multiply steps moved x10 to quickly advance the value
+#define ENCODER_10X_STEPS_PER_SEC 10    // If the encoder steps per sec exceeds this value, multiply steps moved x10 to quickly advance the value
 #define ENCODER_100X_STEPS_PER_SEC 160  // If the encoder steps per sec exceeds this value, multiply steps moved x100 to really quickly advance the value
 
 //#define CHDK 4        //Pin for triggering CHDK to take a picture see how to use it here http://captain-slow.dk/2014/03/09/3d-printing-timelapses/
@@ -451,9 +453,6 @@
 
 // On the Info Screen, display XY with one decimal place when possible
 //#define LCD_DECIMAL_SMALL_XY
-
-// The timeout (in ms) to return to the status screen from sub-menus
-//#define LCD_TIMEOUT_TO_STATUS 15000
 
 #if ENABLED(SDSUPPORT)
 
@@ -670,10 +669,6 @@
   #define UBL_MESH_MAX_X (X_MAX_POS - (UBL_MESH_INSET))
   #define UBL_MESH_MIN_Y (Y_MIN_POS + UBL_MESH_INSET)
   #define UBL_MESH_MAX_Y (Y_MAX_POS - (UBL_MESH_INSET))
-
-  // If this is defined, the currently active mesh will be saved in the
-  // current slot on M500.
-  #define UBL_SAVE_ACTIVE_ON_M500
 #endif
 
 // @section extras
@@ -799,7 +794,7 @@
                                               // Longer length for bowden printers to unload filament from whole bowden tube,
                                               // shorter length for printers without bowden to unload filament from extruder only,
                                               // 0 to disable unloading for manual unloading
-  #define FILAMENT_CHANGE_LOAD_FEEDRATE 6     // Load filament feedrate in mm/s - filament loading into the bowden tube can be fast
+  #define FILAMENT_CHANGE_LOAD_FEEDRATE 10     // Load filament feedrate in mm/s - filament loading into the bowden tube can be fast
   #define FILAMENT_CHANGE_LOAD_LENGTH 0       // Load filament length over hotend in mm
                                               // Longer length for bowden printers to fast load filament into whole bowden tube over the hotend,
                                               // Short or zero length for printers without bowden where loading is not used
@@ -1278,7 +1273,6 @@
 //===========================================================================
 //====================== I2C Position Encoder Settings ======================
 //===========================================================================
-
 /**
  *  I2C position encoders for closed loop control.
  *  Developed by Chris Barr at Aus3D.
