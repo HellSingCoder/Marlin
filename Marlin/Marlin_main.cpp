@@ -10377,6 +10377,18 @@ inline void gcode_T(uint8_t tmp_extruder) {
   #endif
 }
 
+void SetUpFAN2_PIN()
+{
+    SET_OUTPUT(KosselFAN2_PIN);
+    WRITE(KosselFAN2_PIN, LOW);  
+}
+void Fan2Scan()
+{
+  if(thermalManager.degHotend(0)>60)
+  WRITE(KosselFAN2_PIN, HIGH);
+  else WRITE(KosselFAN2_PIN, LOW);
+}
+
 /**
  * Process a single command and dispatch it to its handler
  * This is called from the main loop()
@@ -13061,6 +13073,8 @@ void setup() {
     SET_OUTPUT(E_MUX2_PIN);
   #endif
 
+  SetUpFAN2_PIN();
+  
   lcd_init();
 
   #ifndef CUSTOM_BOOTSCREEN_TIMEOUT
@@ -13136,7 +13150,7 @@ void loop() {
   #if ENABLED(SDSUPPORT)
     card.checkautostart(false);
   #endif
-
+  Fan2Scan();
   if (commands_in_queue) {
 
     #if ENABLED(SDSUPPORT)
