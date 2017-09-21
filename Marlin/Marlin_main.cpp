@@ -5233,7 +5233,7 @@ void home_all_axes() { gcode_G28(true); }
         for (uint8_t axis = 1; axis < 13; ++axis) {
           const float a = RADIANS(180 + 30 * axis);
           if (!position_is_reachable_xy(cos(a) * r, sin(a) * r)) {
-            SERIAL_PROTOCOLLNPGM("?(M665 B)ed radius is implausible.");
+            SERIAL_PROTOCOLLNPGM("?(M665) Bed radius is implausible.");
             return;
           }
         }
