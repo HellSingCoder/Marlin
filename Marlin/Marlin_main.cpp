@@ -5233,7 +5233,7 @@ void home_all_axes() { gcode_G28(true); }
         for (uint8_t axis = 1; axis < 13; ++axis) {
           const float a = RADIANS(180 + 30 * axis);
           if (!position_is_reachable_xy(cos(a) * r, sin(a) * r)) {
-            SERIAL_PROTOCOLLNPGM("?(M665 B)ed radius is implausible.");
+            SERIAL_PROTOCOLLNPGM("?(M665) Bed radius is implausible.");
             return;
           }
         }
@@ -10377,6 +10377,18 @@ inline void gcode_T(uint8_t tmp_extruder) {
   #endif
 }
 
+void SetUpFAN2_PIN()
+{
+    SET_OUTPUT(KosselFAN2_PIN);
+    WRITE(KosselFAN2_PIN, LOW);  
+}
+void Fan2Scan()
+{
+  if(thermalManager.degHotend(0)>60)
+  WRITE(KosselFAN2_PIN, HIGH);
+  else WRITE(KosselFAN2_PIN, LOW);
+}
+
 /**
  * Process a single command and dispatch it to its handler
  * This is called from the main loop()
@@ -13061,6 +13073,8 @@ void setup() {
     SET_OUTPUT(E_MUX2_PIN);
   #endif
 
+  SetUpFAN2_PIN();
+  
   lcd_init();
 
   #ifndef CUSTOM_BOOTSCREEN_TIMEOUT
@@ -13136,7 +13150,7 @@ void loop() {
   #if ENABLED(SDSUPPORT)
     card.checkautostart(false);
   #endif
-
+  Fan2Scan();
   if (commands_in_queue) {
 
     #if ENABLED(SDSUPPORT)
