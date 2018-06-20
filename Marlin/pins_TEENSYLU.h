@@ -79,9 +79,6 @@
 
 #define BOARD_NAME         "Teensylu"
 
-#define USBCON 1286  // Disable MarlinSerial etc.
-#define LARGE_FLASH        true
-
 
 //
 // Limit Switch definitions that match the SCHEMATIC

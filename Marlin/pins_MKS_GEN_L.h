@@ -21,9 +21,19 @@
  */
 
 /**
- * Azteeg X1 pin assignments
+ * MKS GEN L – Arduino Mega2560 with RAMPS v1.4 pin assignments
  */
 
-#define BOARD_NAME "Azteeg X1"
+#if HOTENDS > 2 || E_STEPPERS > 2
+  #error "MKS GEN L supports up to 2 hotends / E-steppers. Comment out this line to continue."
+#endif
 
-#include "pins_SANGUINOLOLU_12.h"
+#define BOARD_NAME "MKS GEN L"
+
+//
+// Heaters / Fans
+//
+// Power outputs EFBF or EFBE
+#define MOSFET_D_PIN 7
+
+#include "pins_RAMPS.h"

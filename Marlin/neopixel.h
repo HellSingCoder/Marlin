@@ -21,9 +21,24 @@
  */
 
 /**
- * Azteeg X1 pin assignments
+ * neopixel.h
  */
 
-#define BOARD_NAME "Azteeg X1"
+#include "MarlinConfig.h"
 
-#include "pins_SANGUINOLOLU_12.h"
+#define NEOPIXEL_IS_RGB  (NEOPIXEL_TYPE == NEO_RGB || NEOPIXEL_TYPE == NEO_RBG || NEOPIXEL_TYPE == NEO_GRB || NEOPIXEL_TYPE == NEO_GBR || NEOPIXEL_TYPE == NEO_BRG || NEOPIXEL_TYPE == NEO_BGR)
+#define NEOPIXEL_IS_RGBW !NEOPIXEL_IS_RGB
+
+#if NEOPIXEL_IS_RGB
+  #define NEO_WHITE 255, 255, 255, 0
+#else
+  #define NEO_WHITE 0, 0, 0, 255
+#endif
+
+#include <Adafruit_NeoPixel.h>
+#include <stdint.h>
+
+void setup_neopixel();
+void set_neopixel_color(const uint32_t color);
+
+extern Adafruit_NeoPixel pixels;

@@ -80,9 +80,6 @@
 
 #define BOARD_NAME         "Brainwave Pro"
 
-#define USBCON 1286  // Disable MarlinSerial etc.
-#define LARGE_FLASH        true
-
 //
 // Limit Switches
 //
