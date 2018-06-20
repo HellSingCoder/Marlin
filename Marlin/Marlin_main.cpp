@@ -12405,6 +12405,97 @@ void prepare_move_to_destination() {
   }
 
 #endif
+/*#if ENABLED(TEMP_STAT_LEDS)
+
+//Virtual Variables
+static millis_t next_status_led_update_ms = 0;
+int t = 2;
+int Rval = 1;
+int Gval = 1;
+int Bval = 1;
+int LEDmax = 255;
+int ExtTemp;
+int BedTemp;
+int ExtTarg;
+int BedTarg;
+//Static Colors
+void off(){Rval = 0;Gval = 0;Bval = 0;}
+void white(){Rval = LEDmax;Gval = LEDmax;Bval = LEDmax;}
+void red(){Rval = LEDmax;Gval = 0;Bval = 0;}
+void green(){Rval = 0;Gval = LEDmax;Bval = 0;}
+void blue(){Rval = 0;Gval = 0;Bval = LEDmax;}
+void yellow(){Rval = LEDmax;Gval = LEDmax;Bval = 0;}
+void cyan(){Rval = 0;Gval = LEDmax;Bval = LEDmax;}
+void magenta(){Rval = LEDmax;Gval = 0;Bval = LEDmax;}
+void warmwhite(){Rval = LEDmax;Gval = 103;Bval = 23;}
+
+
+//Handle Led Stauts
+
+
+void handle_status_leds(){
+if (ELAPSED(millis(), next_status_led_update_ms)) {
+next_status_led_update_ms += 500; // Update every 0.5s
+for (int8_t cur_extruder = 0; cur_extruder < EXTRUDERS; ++cur_extruder) {
+ExtTemp = thermalManager.degHotend(cur_extruder);
+ExtTarg = thermalManager.degTargetHotend(cur_extruder);
+//BedTemp = thermalManager.degBed();
+//BedTarg = thermalManager.degTargetBed();
+}
+//Fade Leds On when starting up
+if(Rval+Gval+Bval == 3){
+//turn off
+analogWrite(STAT_LED_RED_PIN, 255);
+analogWrite(STAT_LED_GREEN_PIN, 255);
+analogWrite(STAT_LED_BLUE_PIN, 255);
+//length of delay
+for(int r = LEDmax; r>0; r--){Rval = r;analogWrite(STAT_LED_RED_PIN, Rval);delay(t);}
+for(int r = 0; r<LEDmax; r++){Rval = r;analogWrite(STAT_LED_RED_PIN, Rval);delay(t);}
+for(int g = LEDmax; g>0; g--){Gval = g;analogWrite(STAT_LED_GREEN_PIN, Gval);delay(t);}
+for(int g = 0; g<LEDmax; g++){Gval = g;analogWrite(STAT_LED_GREEN_PIN, Gval);delay(t);}
+for(int b = LEDmax; b>0; b--){Bval = b;analogWrite(STAT_LED_BLUE_PIN, Bval);delay(t);}
+for(int b = 0; b<LEDmax; b++){Bval = b;analogWrite(STAT_LED_BLUE_PIN, Bval);delay(t);}
+//for(int w = 0; w<LEDmax; w++){Rval = w; Gval = w; Bval = w;analogWrite(STAT_LED_RED_PIN, Rval);analogWrite(STAT_LED_GREEN_PIN, Gval);analogWrite(STAT_LED_BLUE_PIN, Bval);delay(t);}
+}
+//if((BedTarg == 71)||(BedTarg == 1)){off();}
+//if(BedTarg == 100){yellow();}
+if(ExtTarg == 0){warmwhite();}
+if((ExtTarg != 0)
+//&&(BedTarg != 1)
+//&&(BedTarg != 69)
+//&&(BedTarg != 71)
+//&&(BedTarg != 100)
+){ 
+if((ExtTarg >= ExtTemp-TEMP_HYSTERESIS)
+&&(ExtTarg <= ExtTemp+TEMP_HYSTERESIS)){white();}
+//else if((BedTarg == 5)&&(BedTemp <= 50)){green();}
+else{
+int MidTemp = (((EXTRUDE_MINTEMP)-40)/2);
+if(ExtTemp < 40){blue();}
+if(ExtTemp > EXTRUDE_MINTEMP){red();}
+if((ExtTemp > 40)&&(ExtTemp < MidTemp)){
+Rval = map(ExtTemp,40,MidTemp,0,LEDmax);
+Gval = 0; 
+Bval = LEDmax;
+}
+if((ExtTemp > MidTemp)&&(ExtTemp < EXTRUDE_MINTEMP)){
+Rval = LEDmax;
+Gval = 0;
+Bval = map(ExtTemp,MidTemp,EXTRUDE_MINTEMP,LEDmax,0);
+}
+}
+}
+//Write to LEDs
+Rval = (255-Rval);
+Gval = (255-Gval);
+Bval = (255-Bval);
+analogWrite(STAT_LED_RED_PIN, Rval);
+analogWrite(STAT_LED_GREEN_PIN, Gval);
+analogWrite(STAT_LED_BLUE_PIN, Bval);
+}
+}
+#endif*/
+
 
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
 

@@ -144,6 +144,15 @@
   #endif
 #endif
 
+
+//
+// RGB Led
+//
+
+  #define STAT_LED_RED_PIN 43 
+  #define STAT_LED_GREEN_PIN 42
+  #define STAT_LED_BLUE_PIN 11 
+
 //
 // Heaters / Fans
 //
