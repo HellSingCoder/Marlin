@@ -44,10 +44,6 @@
   #include "serial.h"
 #endif
 
-#if ENABLED(INCH_MODE_SUPPORT)
-  extern bool volumetric_enabled;
-#endif
-
 /**
  * GCode parser
  *
@@ -76,6 +72,8 @@ public:
 
   // Global states for GCode-level units features
 
+  static bool volumetric_enabled;
+
   #if ENABLED(INCH_MODE_SUPPORT)
     static float linear_unit_factor, volumetric_unit_factor;
   #endif
@@ -91,7 +89,7 @@ public:
   static char command_letter;             // G, M, or T
   static int codenum;                     // 123
   #if USE_GCODE_SUBCODES
-    static int subcode;                   // .1
+    static uint8_t subcode;               // .1
   #endif
 
   #if ENABLED(DEBUG_GCODE_PARSER)
@@ -131,8 +129,7 @@ public:
 
     // Code seen bit was set. If not found, value_ptr is unchanged.
     // This allows "if (seen('A')||seen('B'))" to use the last-found value.
-    // This is volatile because its side-effects are important
-    static volatile bool seen(const char c) {
+    static bool seen(const char c) {
       const uint8_t ind = LETTER_OFF(c);
       if (ind >= COUNT(param)) return false; // Only A-Z
       const bool b = TEST(codebits[PARAM_IND(ind)], PARAM_BIT(ind));
@@ -148,8 +145,7 @@ public:
 
     // Code is found in the string. If not found, value_ptr is unchanged.
     // This allows "if (seen('A')||seen('B'))" to use the last-found value.
-    // This is volatile because its side-effects are important
-    static volatile bool seen(const char c) {
+    static bool seen(const char c) {
       const char *p = strchr(command_args, c);
       const bool b = !!p;
       if (b) value_ptr = DECIMAL_SIGNED(p[1]) ? &p[1] : (char*)NULL;
@@ -170,6 +166,11 @@ public:
   // Populate all fields by parsing a single line of GCode
   // This uses 54 bytes of SRAM to speed up seen/value
   static void parse(char * p);
+
+  #if ENABLED(CNC_COORDINATE_SYSTEMS)
+    // Parse the next parameter as a new command
+    static bool chain();
+  #endif
 
   // The code value pointer was set
   FORCE_INLINE static bool has_value() { return value_ptr != NULL; }
@@ -309,7 +310,7 @@ public:
 
   // Provide simple value accessors with default option
   FORCE_INLINE static float    floatval(const char c, const float dval=0.0)   { return seenval(c) ? value_float()        : dval; }
-  FORCE_INLINE static bool     boolval(const char c, const bool dval=false)   { return seen(c)    ? value_bool()         : dval; }
+  FORCE_INLINE static bool     boolval(const char c)                          { return seenval(c) ? value_bool()      : seen(c); }
   FORCE_INLINE static uint8_t  byteval(const char c, const uint8_t dval=0)    { return seenval(c) ? value_byte()         : dval; }
   FORCE_INLINE static int16_t  intval(const char c, const int16_t dval=0)     { return seenval(c) ? value_int()          : dval; }
   FORCE_INLINE static uint16_t ushortval(const char c, const uint16_t dval=0) { return seenval(c) ? value_ushort()       : dval; }
